@@ -46,7 +46,7 @@ def main(args):
             return res
 
     region_code_list = set(region_code_list)
-    code_pattern = re.compile("^[A-Z]+$")
+    code_pattern = re.compile(r'^[A-Z]+$')
     for code in region_code_list:
         if not code_pattern.match(code):
             print('incorrect region code: ' + code, file=sys.stderr)
@@ -61,7 +61,7 @@ def main(args):
         require_type = 'allocated'
     if opt.assigned_only:
         require_type = 'assigned'
-    ipv4_pattern = re.compile('apnic\|([A-Z]+)\|ipv4\|([\d\.]+)\|(\d+)\|(\S+?)\|(\S+)')
+    ipv4_pattern = re.compile(r'apnic\|([A-Z]+)\|ipv4\|([\d\.]+)\|(\d+)\|(\S+?)\|(\S+)')
     # group 1: region code
     # group 2: ipv4
     # group 3: amount

@@ -4,10 +4,17 @@ import argparse
 import re
 import netaddr
 from os import path
+from urllib import request
 
-def update():
-    print('update no implementation', file=sys.stderr)
-    return 1
+def report_progress(count, blockSize, totalSize):
+    percent = int(count*blockSize*100/totalSize)
+    percent = min(100, percent)
+    print("\rUpdating: %d%%" % percent, end='', file=sys.stderr)
+
+def update(file_name):
+    request.urlretrieve('http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest', file_name, report_progress)
+    print('', file=sys.stderr)
+    return 0
 
 def write_ip_range(o, ipstart, ipstop):
     for net in netaddr.iprange_to_cidrs(ipstart, ipstop - 1):

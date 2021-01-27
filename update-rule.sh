@@ -21,10 +21,23 @@ generate_dns_rule(){
     echo generate "$1".gz ... && gzip -fk "$1"
 }
 
-generate_ip_rule(){
+generate_ip_rule_apnic(){
+    echo update apnic-latest.txt ... && ./regionip.py --update
+    echo write to "$1" ... && ./regionip.py CN >"$1"
+}
+
+generate_ip_rule_ip2location(){
     echo download data and write to "$1" ... && ./ip2location.py china >"$1"
+}
+
+generate_ip_rule(){
+    output="$1"
+    shift
+    echo generate "$1" ... && ./cidr_merge.py "$@" >"$output"
     echo generate "$1".gz ... && gzip -fk "$1"
 }
 
 generate_dns_rule dns_rule
-generate_ip_rule ip_rule
+generate_ip_rule_apnic ip_rule.apnic
+generate_ip_rule_ip2location ip_rule.ip2location
+generate_ip_rule ip_rule ip_rule.apnic ip_rule.ip2location

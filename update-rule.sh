@@ -22,8 +22,7 @@ generate_dns_rule(){
 }
 
 generate_ip_rule(){
-    echo update apnic-latest.txt ... && ./regionip.py --update
-    echo write to "$1" ... && ./regionip.py CN >"$1"
+    echo download data and write to "$1" ... && ./ip2location.py china >"$1"
     echo generate "$1".gz ... && gzip -fk "$1"
 }
 

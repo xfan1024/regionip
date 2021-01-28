@@ -33,8 +33,8 @@ generate_ip_rule_ip2location(){
 generate_ip_rule(){
     output="$1"
     shift
-    echo generate "$1" ... && ./cidr_merge.py "$@" >"$output"
-    echo generate "$1".gz ... && gzip -fk "$1"
+    echo generate "$output" ... && ./cidr_merge.py "$@" >"$output"
+    echo generate "$output".gz ... && gzip -fk "$output"
 }
 
 generate_dns_rule dns_rule

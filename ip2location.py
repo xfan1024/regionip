@@ -6,12 +6,15 @@ from lxml import etree
 
 def fetch_html(url):
     # with open('ip2location-china.html', 'r') as html_file:
-    #     return html_file.read()
-    return requests.get(url).text
+    #     text = html_file.read()
+    text = requests.get(url).text
+    # with open('ip2location-china.html', 'w') as html_file:
+    #     html_file.write(text)
+    return text
 
 
 def tr_to_cidr(tr):
-    td_start, td_end, td_size = tr.getchildren()
+    _, td_start, _, td_end, _, td_size, _ = tr.getchildren()
     start = netaddr.IPAddress(td_start.text)
     end = netaddr.IPAddress(td_end.text)
     size = int(td_size.text.replace(',', ''))
@@ -21,7 +24,7 @@ def tr_to_cidr(tr):
     
 
 def main(args):
-    xpath = '/html/body/div[2]/div/div/div/div/div/div/table/tbody'
+    xpath = '//*[@id="ip-address"]/tbody'
     url = 'https://lite.ip2location.com/{}-ip-address-ranges'.format(args[1])
     html = etree.HTML(fetch_html(url))
     for tr in html.xpath(xpath)[0]:

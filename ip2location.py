@@ -2,7 +2,7 @@
 import sys
 import netaddr
 import requests
-from lxml import etree
+import json
 
 def fetch_html(url):
     # with open('ip2location-china.html', 'r') as html_file:
@@ -13,22 +13,18 @@ def fetch_html(url):
     return text
 
 
-def tr_to_cidr(tr):
-    _, td_start, _, td_end, _, td_size, _ = tr.getchildren()
-    start = netaddr.IPAddress(td_start.text)
-    end = netaddr.IPAddress(td_end.text)
-    size = int(td_size.text.replace(',', ''))
-    assert(end.value - start.value + 1 == size)
+def item_to_cidr(item):
+    start = netaddr.IPAddress(item[0])
+    end = netaddr.IPAddress(item[1])
     return netaddr.iprange_to_cidrs(start, end)
-    
-    
 
 def main(args):
     xpath = '//*[@id="ip-address"]/tbody'
-    url = 'https://lite.ip2location.com/{}-ip-address-ranges'.format(args[1])
-    html = etree.HTML(fetch_html(url))
-    for tr in html.xpath(xpath)[0]:
-        for net in tr_to_cidr(tr):
+    url = 'http://assets-lite.ip2location.com/datasets/{}.json'.format(args[1])
+    data_root = json.loads(fetch_html(url))
+    data = data_root['data']
+    for item in data:
+        for net in item_to_cidr(item):
             print(str(net))
 
 if __name__ == '__main__':
